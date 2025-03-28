@@ -35,3 +35,4 @@ Runner/GeneratedPluginRegistrant.*
 
 #Fastlane
 fastlane/.env
+fastlane/*.p8
