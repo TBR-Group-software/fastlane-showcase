@@ -32,8 +32,16 @@ platform :ios do
     )
   end
 
+
   desc "Build and upload to TestFlight"
   lane :upload_to_testflight_function do
+    setup_ci
+    
+    # Get app identifier and team ID from Appfile
+    app_id = CredentialsManager::AppfileConfig.try_fetch_value(:app_identifier)
+    team_id = CredentialsManager::AppfileConfig.try_fetch_value(:team_id)
+
+    match_profile = "match AppStore #{app_id}"
     
     # Configure App Store Connect API
     app_store_connect_api_key(
@@ -41,29 +49,42 @@ platform :ios do
       issuer_id: ENV["ASC_ISSUER_ID"],
       key_filepath: ENV["ASC_KEY_PATH"],
     )
-
-    # Sync certificates and profiles
-    match(
+    
+    # Fetch certificates and profiles
+    sync_code_signing(
       type: "appstore",
       readonly: true,
+      app_identifier: app_id
     )
-
+    
+    # Update project settings to use match provisioning profile
+    update_code_signing_settings(
+      use_automatic_signing: false,
+      path: "Runner.xcodeproj",
+      team_id: team_id,
+      profile_name: match_profile,
+      code_sign_identity: "iPhone Distribution"
+    )
+    
     # Increment build number
     increment_build_number(
       build_number: latest_testflight_build_number + 1
     )
-
+    
     # Build the app
     build_app(
       scheme: "development",
       export_method: "app-store",
+      export_options: {
+        provisioningProfiles: {
+          app_id => match_profile
+        }
+      }
     )
     
     # Upload to TestFlight
     upload_to_testflight(skip_waiting_for_build_processing: true)
-
   end
-
-
+  
+  
 end
-
