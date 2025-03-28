@@ -1,0 +1,5 @@
+git_url("YOUR-GITHUB-REPO-URL")
+
+storage_mode("git")
+
+type("development") # The default type, can be: appstore, adhoc, enterprise or development
