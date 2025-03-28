@@ -1,9 +1,5 @@
 # Fastlane iOS TestFlight Deployment - Example Setup
 
-<p align="center">
-  <img src="https://fastlane.tools/assets/img/fastlane.png" alt="Fastlane Logo" width="250">
-</p>
-
 This repository serves as a reference implementation for automating iOS app distribution to TestFlight using Fastlane. It demonstrates best practices and configuration patterns that you can adapt for your own iOS projects.
 
 ## Overview
