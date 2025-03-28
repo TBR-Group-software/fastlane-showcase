@@ -1,13 +1,6 @@
 default_platform(:ios)
 
 platform :ios do
-  desc "Push a new beta build to TestFlight"
-  lane :beta do
-    increment_build_number(xcodeproj: "Runner.xcodeproj")
-    build_app(workspace: "Runner.xcworkspace", scheme: "Runner")
-    upload_to_testflight
-  end
-
   desc "Create new certificates and provisioning profiles"
   lane :create_certificates_and_profiles do
     # Create for appstore
