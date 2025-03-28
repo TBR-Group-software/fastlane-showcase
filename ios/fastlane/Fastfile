@@ -1,0 +1,69 @@
+default_platform(:ios)
+
+platform :ios do
+  desc "Push a new beta build to TestFlight"
+  lane :beta do
+    increment_build_number(xcodeproj: "Runner.xcodeproj")
+    build_app(workspace: "Runner.xcworkspace", scheme: "Runner")
+    upload_to_testflight
+  end
+
+  desc "Create new certificates and provisioning profiles"
+  lane :create_certificates_and_profiles do
+    # Create for appstore
+    match(
+      type: "appstore",
+      force: true,
+      readonly: false,
+    )
+
+    # Create for development
+    match(
+      type: "development",
+      force: true,
+      readonly: false,
+      )
+
+    # Create for adhoc
+    match(
+      type: "adhoc",
+      force: true,
+      readonly: false,
+    )
+  end
+
+  desc "Build and upload to TestFlight"
+  lane :upload_to_testflight_function do
+    
+    # Configure App Store Connect API
+    app_store_connect_api_key(
+      key_id: ENV["ASC_KEY_ID"],
+      issuer_id: ENV["ASC_ISSUER_ID"],
+      key_content: ENV["ASC_KEY_CONTENT"]
+    )
+
+    # Sync certificates and profiles
+    match(
+      type: "appstore",
+      readonly: true,
+    )
+
+    # Increment build number
+    increment_build_number(
+      build_number: latest_testflight_build_number + 1
+    )
+
+    # Build the app
+    build_app(
+      scheme: "development",
+      export_method: "app-store",
+    )
+    
+    # Upload to TestFlight
+    upload_to_testflight(skip_waiting_for_build_processing: true)
+
+  end
+
+
+end
+
