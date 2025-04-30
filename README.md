@@ -155,7 +155,7 @@ Ensure your build number on App Store Connect is always ahead of the local Xcode
 
 ## **📄 License**
 
-This repository is licensed under the [GNU General Public License v3.0 (GPL-3.0)](https://www.notion.so/LICENSE).
+This repository is licensed under the [GNU General Public License v3.0 (GPL-3.0)].
 
 ---
 
