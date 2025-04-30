@@ -112,35 +112,11 @@ cd ios
 fastlane match appstore
 ```
 
-1.
-2. Run your first deployment:
+6. Run your first deployment:
 
 ```
 bundle exec fastlane upload_to_testflight_function
 ```
-
----
-
-## **🧰 Troubleshooting**
-
-### **❌ Certificate Issues?**
-
-Use these Fastlane commands:
-
-```
-fastlane match nuke distribution
-fastlane match appstore
-```
-
-### **❌ Build Number Conflicts?**
-
-The lane automatically increments the build number using:
-
-```
-latest_testflight_build_number + 1
-```
-
-Ensure your build number on App Store Connect is always ahead of the local Xcode version.
 
 ---
 
