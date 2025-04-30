@@ -6,15 +6,15 @@ This repository provides a reference implementation for deploying iOS applicatio
 
 ## **📚 Table of Contents**
 
-- [Features](https://www.notion.so/1e5f0ef3386a805d8898fa62f3b556d9?pvs=21)
-- [Directory Structure](https://www.notion.so/1e5f0ef3386a805d8898fa62f3b556d9?pvs=21)
-- [GitHub Actions Workflow](https://www.notion.so/1e5f0ef3386a805d8898fa62f3b556d9?pvs=21)
-- [Required Secrets](https://www.notion.so/1e5f0ef3386a805d8898fa62f3b556d9?pvs=21)
-- [How to Run the GitHub Action Manually](https://www.notion.so/1e5f0ef3386a805d8898fa62f3b556d9?pvs=21)
-- [Integrate into Your Own Project](https://www.notion.so/1e5f0ef3386a805d8898fa62f3b556d9?pvs=21)
-- [Troubleshooting](https://www.notion.so/1e5f0ef3386a805d8898fa62f3b556d9?pvs=21)
-- [Resources](https://www.notion.so/1e5f0ef3386a805d8898fa62f3b556d9?pvs=21)
-- [License](https://www.notion.so/1e5f0ef3386a805d8898fa62f3b556d9?pvs=21)
+- [Features](#-features)
+- [Directory Structure](#-directory-structure)
+- [GitHub Actions Workflow](#-github-actions-workflow)
+- [Required Secrets](#-required-secrets)
+- [How to Run the GitHub Action Manually](#-how-to-run-the-github-action-manually)
+- [Integrate into Your Own Project](#️-integrate-into-your-own-project)
+- [Troubleshooting](#-troubleshooting)
+- [Resources](#-resources)
+- [License](#-license)
 
 ---
 
