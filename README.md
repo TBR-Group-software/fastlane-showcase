@@ -12,7 +12,6 @@ This repository provides a reference implementation for deploying iOS applicatio
 - [Required Secrets](#-required-secrets)
 - [How to Run the GitHub Action Manually](#-how-to-run-the-github-action-manually)
 - [Integrate into Your Own Project](#️-integrate-into-your-own-project)
-- [Troubleshooting](#-troubleshooting)
 - [Resources](#-resources)
 - [License](#-license)
 
