@@ -1,0 +1,53 @@
+name: iOS TestFlight Deployment
+
+on:
+  workflow_dispatch:
+
+jobs:
+  deploy-to-testflight:
+    name: Build and deploy to TestFlight
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Install SSH Key
+        uses: webfactory/ssh-agent@v0.9.1
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: "3.0"
+          bundler-cache: true
+          bundler: "2.4.22"
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: "3.29.2"
+          channel: "stable"
+
+      - name: Install Flutter dependencies
+        run: flutter pub get
+
+      - name: Install Ruby dependencies
+        working-directory: ./ios
+        run: bundle install
+
+      - name: Decode App Store Connect API Key
+        run: |
+          echo "${{ secrets.ASC_KEY_BASE64 }}" | base64 --decode > ./ios/AuthKey.p8
+
+      - name: Build and upload to TestFlight
+        working-directory: ./ios
+        env:
+          ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
+          ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
+          ASC_KEY_PATH: ./ios/AuthKey.p8
+          MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
+        run: bundle exec fastlane upload_to_testflight_function
