@@ -48,6 +48,6 @@ jobs:
         env:
           ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
           ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
-          ASC_KEY_PATH: ./ios/AuthKey.p8
+          ASC_KEY_PATH: ./AuthKey.p8
           MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
         run: bundle exec fastlane upload_to_testflight_function
