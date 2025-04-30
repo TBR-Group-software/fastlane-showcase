@@ -6,7 +6,7 @@ on:
 jobs:
   deploy-to-testflight:
     name: Build and deploy to TestFlight
-    runs-on: macos-latest
+    runs-on: macos-14
 
     steps:
       - name: Checkout repository
@@ -42,6 +42,9 @@ jobs:
       - name: Decode App Store Connect API Key
         run: |
           echo "${{ secrets.ASC_KEY_BASE64 }}" | base64 --decode > ./ios/AuthKey.p8
+
+      - name: Select Xcode 16
+        run: sudo xcode-select -s /Applications/Xcode_16.0.app
 
       - name: Build and upload to TestFlight
         working-directory: ./ios
