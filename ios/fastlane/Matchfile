@@ -1,4 +1,4 @@
-git_url("YOUR-GITHUB-REPO-URL")
+git_url("git@github.com:TBR-Group-software/fastlane-showcase-cert.git")
 
 storage_mode("git")
 
