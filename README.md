@@ -1,159 +1,166 @@
-# Fastlane iOS TestFlight Deployment - Example Setup
+# **iOS TestFlight Deployment via Fastlane & GitHub Actions**
 
-This repository serves as a reference implementation for automating iOS app distribution to TestFlight using Fastlane. It demonstrates best practices and configuration patterns that you can adapt for your own iOS projects.
+This repository provides a reference implementation for deploying iOS applications to **TestFlight** using **Fastlane** and **GitHub Actions**. It includes automated certificate management, API-based authentication, and secure secret handling for CI environments.
 
-## Overview
+---
 
-This example showcases:
+## **📚 Table of Contents**
 
-- ✅ Certificate and provisioning profile management with Match
-- ✅ App Store Connect API integration for seamless deployments
-- ✅ Automated build number incrementation
-- ✅ TestFlight deployment automation
-- ✅ Environment variable management for secure credential storage
+- [Features](https://www.notion.so/1e5f0ef3386a805d8898fa62f3b556d9?pvs=21)
+- [Directory Structure](https://www.notion.so/1e5f0ef3386a805d8898fa62f3b556d9?pvs=21)
+- [GitHub Actions Workflow](https://www.notion.so/1e5f0ef3386a805d8898fa62f3b556d9?pvs=21)
+- [Required Secrets](https://www.notion.so/1e5f0ef3386a805d8898fa62f3b556d9?pvs=21)
+- [How to Run the GitHub Action Manually](https://www.notion.so/1e5f0ef3386a805d8898fa62f3b556d9?pvs=21)
+- [Integrate into Your Own Project](https://www.notion.so/1e5f0ef3386a805d8898fa62f3b556d9?pvs=21)
+- [Troubleshooting](https://www.notion.so/1e5f0ef3386a805d8898fa62f3b556d9?pvs=21)
+- [Resources](https://www.notion.so/1e5f0ef3386a805d8898fa62f3b556d9?pvs=21)
+- [License](https://www.notion.so/1e5f0ef3386a805d8898fa62f3b556d9?pvs=21)
 
-## Repository Structure
+---
 
-```
-fastlane/
-├── Appfile               # App-specific configuration
-├── Fastfile              # Automation lanes (core implementation)
-├── Matchfile             # Certificate management configuration
-├── .env                  # Environment variables for credentials
-```
+## **🔧 Features**
 
-## Key Files Explained
+- ✅ Automated deployment to TestFlight using Fastlane
+- ✅ Secure handling of App Store Connect credentials
+- ✅ CI-ready with GitHub Actions
+- ✅ Certificate & provisioning profile management via match
+- ✅ Build number auto-incrementation using latest TestFlight build
 
-### Fastfile
+---
 
-The Fastfile is the heart of the implementation, containing two main lanes:
-
-1. **`create_certificates_and_profiles`**: Sets up all necessary certificates for development, ad-hoc, and App Store distribution
-2. **`upload_to_testflight_function`**: Handles the entire TestFlight deployment process
-
-```ruby
-desc "Build and upload to TestFlight"
-lane :upload_to_testflight_function do
-  # Setup for CI environments
-  setup_ci
-
-  # Configure API access
-  app_store_connect_api_key(...)
-
-  # Fetch certificates
-  sync_code_signing(...)
-
-  # Update code signing settings
-  update_code_signing_settings(...)
-
-  # Increment build number
-  increment_build_number(...)
-
-  # Build the app
-  build_app(...)
-
-  # Upload to TestFlight
-  upload_to_testflight(...)
-end
-```
-
-### Matchfile
-
-The Matchfile demonstrates how to configure Match for certificate management:
-
-```ruby
-git_url("YOUR-GITHUB-REPO-URL")
-storage_mode("git")
-type("development")
-```
-
-In your own implementation, you'll need to:
-
-- Create a private repository for certificate storage
-- Update the `git_url` with your repository
-
-### Environment Variables
-
-The repository demonstrates how a .env file should be configured. For your implementation, you'll need to set up credentials like:
+## **📁 Directory Structure**
 
 ```
-ASC_KEY_ID="ABC123DEFG"
-ASC_ISSUER_ID="aaaaa-bbbbb-ccccc-ddddd"
-ASC_KEY_PATH="/path/to/AuthKey_ABC123DEFG.p8"
+.github/
+└── workflows/
+    └── ios-testflight.yml      # GitHub Actions CI pipeline
+
+ios/
+└── fastlane/
+    ├── Appfile                 # App identifier & team ID
+    ├── Fastfile                # Deployment lanes (Fastlane logic)
+    ├── Matchfile               # match configuration for code signing
+    └── .env                    # API credentials (excluded from VCS)
 ```
 
-## Implementing in Your Own Project
+---
 
-To adapt this example for your own iOS app:
+## **🚀 GitHub Actions Workflow**
 
-1. **Install Fastlane** in your project:
+The GitHub Actions workflow performs the following steps:
 
-   ```bash
-   cd ios  # Navigate to your iOS project directory
-   gem install fastlane
-   ```
+1. **Check out code** from the default branch
+2. **Install dependencies**: Flutter, Ruby gems, and SSH agent
+3. **Decode App Store Connect API key** from a base64 string
+4. **Execute Fastlane** lane to:
+   - Configure App Store Connect access
+   - Sync code signing assets using match
+   - Update Xcode code signing settings
+   - Increment the build number automatically
+   - Build the .ipa file
+   - Upload to TestFlight
 
-2. **Copy the key files** from this repository:
+> The Fastlane logic is encapsulated in a custom lane called upload_to_testflight_function, defined in ios/fastlane/Fastfile.
 
-   - Fastfile
-   - Matchfile
-   - Appfile
+---
 
-3. **Modify the configuration** for your specific app:
+## **🔐 Required Secrets**
 
-   - Update bundle identifiers
-   - Set your team ID
-   - Configure your build schemes
+These secrets must be configured in your repository settings under **Settings → Secrets and variables → Actions**:
 
-4. **Set up App Store Connect API access**:
+| **Secret Key**  | **Description**                                       |
+| --------------- | ----------------------------------------------------- |
+| SSH_PRIVATE_KEY | SSH key to access the private match certificates repo |
+| ASC_KEY_BASE64  | Base64-encoded App Store Connect API .p8 key          |
+| ASC_KEY_ID      | App Store Connect API Key ID                          |
+| ASC_ISSUER_ID   | App Store Connect API Issuer ID                       |
+| MATCH_PASSWORD  | Password used to decrypt the certificates             |
 
-   - Create API keys in [App Store Connect](https://appstoreconnect.apple.com/)
-   - Create a `.env`
+---
 
-5. **Set up a private certificate repository** for Match:
+## **🧪 How to Run the GitHub Action Manually**
 
-   - Create a private GitHub repository
-   - Update the Matchfile with your repository URL
+> ⚠️ The workflow must be committed to the
+>
+> **default branch**
 
-6. **Generate certificates** with:
+To run the deployment manually:
 
-   ```bash
-   fastlane create_certificates_and_profiles
-   ```
+1. Go to the **Actions** tab in your GitHub repository
+2. Select the workflow titled iOS TestFlight Deployment
+3. Click **Run workflow** in the top-right
+4. Confirm and monitor the run
 
-7. **Run your first deployment** with:
-   ```bash
-   fastlane upload_to_testflight_function
-   ```
+---
 
-## Common Challenges & Solutions
+## **🛠️ Integrate into Your Own Project**
 
-### Certificate Management
+To adapt this setup for your iOS app:
 
-If your team encounters certificate issues, have them run:
+1. **Copy the workflow** file to .github/workflows/ios-testflight.yml
+2. **Copy the Fastlane config** from ios/fastlane/ into your own iOS directory
+3. Update the following:
+   - Bundle ID in Appfile
+   - Team ID in Appfile
+   - Match certificate repository URL in Matchfile
+   - Build scheme in Fastfile
+4. Add the required GitHub secrets listed above
+5. Generate your initial code signing assets:
 
-```bash
+```
+cd ios
+fastlane match appstore
+```
+
+1.
+2. Run your first deployment:
+
+```
+bundle exec fastlane upload_to_testflight_function
+```
+
+---
+
+## **🧰 Troubleshooting**
+
+### **❌ Certificate Issues?**
+
+Use these Fastlane commands:
+
+```
 fastlane match nuke distribution
 fastlane match appstore
 ```
 
-### Build Number Management
+### **❌ Build Number Conflicts?**
 
-The example automatically increments build numbers by fetching the latest from TestFlight:
+The lane automatically increments the build number using:
 
-```ruby
-increment_build_number(build_number: latest_testflight_build_number + 1)
+```
+latest_testflight_build_number + 1
 ```
 
-## Resources
-
-- [Official Fastlane Documentation](https://docs.fastlane.tools/)
-- [Match for Certificate Management](https://docs.fastlane.tools/actions/match/)
-
-## License
-
-This repository is licensed under the GNU General Public License v3.0 (GPL-3.0). This is a strong copyleft license that requires anyone who distributes your code or derivative works to make the source available under the same terms. For the full license text, see the LICENSE file in the repository.
+Ensure your build number on App Store Connect is always ahead of the local Xcode version.
 
 ---
 
-Developed by TBR Group as a reference implementation for the iOS community. Visit [TBR Group](https://tbrgroup.software/blog/) for more resources.
+## **📚 Resources**
+
+- 📘 [Fastlane Documentation](https://docs.fastlane.tools/)
+- 🔐 [Match for Certificate Management](https://docs.fastlane.tools/actions/match/)
+- 🚀 [App Store Connect API](https://developer.apple.com/documentation/appstoreconnectapi)
+- 🧪 [GitHub Actions Documentation](https://docs.github.com/en/actions)
+
+---
+
+## **📄 License**
+
+This repository is licensed under the [GNU General Public License v3.0 (GPL-3.0)](https://www.notion.so/LICENSE).
+
+---
+
+> Built and maintained by
+>
+> **TBR Group**
+>
+> [tbrgroup.software](https://tbrgroup.software/blog/)
